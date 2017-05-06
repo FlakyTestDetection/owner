@@ -1,31 +1,26 @@
-language: java
-jdk:
-  - oraclejdk8
-  - oraclejdk7
-#  - oraclejdk6
-#  - oraclejdk5
-  - openjdk7
-  - openjdk6
-#  - openjdk5
-
-os:
-  - linux
-  - windows
-# Looks there is some problem with Java and OSX on Travis.
-# See: https://github.com/travis-ci/travis-ci/issues/3477
-#  - osx
-
-# Fix OpenJDK builds
-# See: https://github.com/travis-ci/travis-ci/issues/5227
-sudo: false
-
-install: mvn install -DskipTests=true -B
-script: mvn test -B
-
 after_success:
-  - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:cobertura
+- mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:cobertura
 before_install:
-  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
-  - unzip -qq apache-maven-3.3.9.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
+- wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+- unzip -qq apache-maven-3.3.9.zip
+- export M2_HOME=$PWD/apache-maven-3.3.9
+- export PATH=$M2_HOME/bin:$PATH
+install: mvn install -DskipTests=true -B
+jdk:
+- oraclejdk8
+- oraclejdk7
+- openjdk7
+- openjdk6
+language: java
+notifications:
+  email: false
+  slack:
+    rooms: flakycov:U2MeVOPjdi4up1U793ubeIUZ
+    template:
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}
+    - 'dashbot: %{repository_name} %{build_id}'
+os:
+- linux
+- windows
+script: mvn test -B
+sudo: false
